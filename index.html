@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+        <link rel="stylesheet" href="./style.css">
+
+        <script defer src="./scripts/script.js"></script>
+
+        <title> Snake Anti-hero Game </title>
+    </head>
+    <body>
+        <h1>Snake Anti-Hero Game</h1>  
+        <canvas id="snake" width="512" height="512"></canvas>
+
+        <footer>
+            <p>Desenvolvido por <a target="_blank" href="https://pleiterson.vercel.app/" rel="noopener noreferrer">Gustavo Pereira & Pedro Augusto</a></p>
+        </footer>
+        <input class="oye" type="button" value="ATUALIZAR PÁGINA" onclick="window.location.reload()">
+        <script>
+let canvas = document.getElementById("snake"); // criar elemento que irá rodar o jogo
+let context = canvas.getContext("2d");
+let box = 32;
+
+let snake = []; // criar cobrinha como lista, já que ela vai ser uma série de coordenadas, que quando pintadas, criam os quadradinhos
+snake[0] = {
+    x: 8 * box,
+    y: 8 * box
+};
+
+let direction = "right";
+
+let food = {
+    x: Math.floor(Math.random() * 15 + 1) * box,
+    y: Math.floor(Math.random() * 15 + 1) * box
+}
+
+function createBG() {
+    context.fillStyle = "black";
+    context.fillRect(0,0,16 * box, 16 * box); // desenha o retângulo usando x e y e a largura e altura setadas
+}
+
+function createSnake() {
+    for (i = 0; i < snake.length; i++) {
+        context.fillStyle = "yellowgreen";
+        context.fillRect(snake[i].x, snake[i].y, box, box);
+    }
+}
+
+function createFood() {
+    context.fillStyle = "orangered";
+    context.fillRect(food.x, food.y, box, box);
+}
+
+document.addEventListener('keydown', update); // quando um evento acontece, detecta e chama uma função
+
+function update(event) {
+    if (event.keyCode == 37 && direction != 'right') direction = 'left' ;
+    if (event.keyCode == 38 && direction != 'down') direction = 'up';
+    if (event.keyCode == 39 && direction != 'left') direction = 'right';
+    if (event.keyCode == 40 && direction != 'up') direction = 'down';
+}
+
+function startGame() {
+    if (snake[0].x > 15 * box && direction == "right") snake[0].x = 0;
+    if (snake[0].x < 0 && direction == 'left') snake[0].x = 16 * box;
+    if (snake[0].y > 15 * box && direction == "down") snake[0].y = 0;
+    if (snake[0].y < 0 && direction == 'up') snake[0].y = 16 * box;
+
+    for (i = 1; i < snake.length; i++) {
+        if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
+            clearInterval(game);
+            alert('Broxouuu');
+              
+        }
+    }
+    
+
+    createBG();
+    createSnake();
+    createFood();
+
+    let snakeX = snake[0].x;
+    let snakeY = snake[0].y;
+
+    if( direction == "right") snakeX += box;
+    if (direction == "left") snakeX -= box;
+    if (direction == "up") snakeY -= box;
+    if (direction == "down") snakeY += box;
+
+    if (snakeX != food.x || snakeY != food.y) {
+        snake.pop(); // pop tira o último elemento da lista
+    } else {
+        food.x = Math.floor(Math.random() * 15 + 1) * box;
+        food.y = Math.floor(Math.random() * 15 + 1) * box;
+    }
+
+    let newHead = {
+        x: snakeX,
+        y: snakeY
+    };
+
+    snake.unshift(newHead); // método unshift adiciona o primeiro quadrado da cobrinha
+}
+
+let game = setInterval(startGame, 100);
+
+// INSPIRADO EM:  https://github.com/Pleiterson/snake-game-javascript
+        </script>
+</html>
